@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>泽轩604 · 视频幕后</title>
+<meta name="description" content="泽轩604 每条视频是怎么做出来的：选题、实测、文案、AI 出画面、返修和发布，数据来自真实的制作记录。">
+<meta name="author" content="泽轩604">
+<link rel="canonical" href="https://zexuanw958-svg.github.io/zexuan-videos/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="泽轩604 · 视频幕后">
+<meta property="og:description" content="每条视频是怎么做出来的，数据来自真实的制作记录。">
+<meta property="og:image" content="https://zexuanw958-svg.github.io/zexuan-videos/2026-10-01-wuzhongshengyou/cover.jpg">
+<meta name="theme-color" content="#0E0F10">
+<style>
+/* 目录页：和每期幕后页同一套暗房配色，一期一张卡 */
+@font-face { font-family: "ZX Serif"; src: url("fonts/zx-serif-700.woff2") format("woff2"); font-weight: 700 900; font-display: swap; }
+:root {
+  --bg: #0E0F10; --panel: #17191B; --line: #2B2F33;
+  --ink: #ECE7DF; --ink-2: #B4AFA7; --ink-3: #7F7B75; --safe: #E0543C; --ice: #A9D6E2;
+  --display: "ZX Serif", "Noto Serif SC", "Songti SC", "STSong", serif;
+  --body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root { --bg: #EEF0EF; --panel: #FFFFFF; --line: #D3D8D6; --ink: #16181A; --ink-2: #4A4F53; --ink-3: #7A8084; --safe: #C23F29; --ice: #2C7A8F; color-scheme: light; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); line-height: 1.75; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+.wrap { max-width: 960px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); padding-block: 72px 96px; display: grid; gap: 40px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--ink-3); }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 4vw, 42px); line-height: 1.3; margin: 10px 0 0; }
+.lead { color: var(--ink-2); max-width: 36em; margin: 14px 0 0; }
+.ep { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.ep:hover { border-color: var(--safe); }
+.ep img { display: block; width: 100%; height: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.ep .tx { padding: 20px 22px; display: grid; gap: 8px; align-content: center; min-width: 0; }
+.ep .meta { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.ep h2 { font-family: var(--display); font-weight: 700; font-size: 22px; line-height: 1.4; margin: 0; }
+.ep p { margin: 0; font-size: 14px; color: var(--ink-2); }
+.ep .go { font-size: 13px; color: var(--safe); }
+footer { font-size: 13px; color: var(--ink-3); }
+footer a { color: var(--ice); }
+@media (max-width: 680px) { .ep { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="eyebrow">ZEXUAN604 · BEHIND THE VIDEOS</div>
+    <h1>泽轩604 · 视频幕后</h1>
+    <p class="lead">每条视频是怎么做出来的：选题、实测、文案、AI 出画面、返修和发布。页面里的数字都来自真实的制作记录。</p>
+  </header>
+  <a class="ep" href="2026-10-01-wuzhongshengyou/">
+    <img src="2026-10-01-wuzhongshengyou/cover.jpg" alt="《无中生有》封面：墙上的人形雪花">
+    <div class="tx">
+      <span class="meta">2026.10.01 · Vibe知识大赏 第二期 · 4:20</span>
+      <h2>《无中生有》：AI 消除路人后，墙是哪来的？</h2>
+      <p>画面全是 AI 写代码渲出来的，被擦掉的那块墙在本机用 SDXL 真擦了一遍。</p>
+      <span class="go">看制作幕后 →</span>
+    </div>
+  </a>
+  <footer>泽轩604 · 抖音 AI 博主 · <a href="https://github.com/zexuanw958-svg/zexuan-videos">GitHub 仓库</a></footer>
+</main>
+</body>
+</html>

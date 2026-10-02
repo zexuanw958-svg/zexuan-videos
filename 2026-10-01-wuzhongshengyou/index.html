@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>无中生有 · 制作幕后 · 泽轩604</title>
+<meta name="description" content="《无中生有》（Vibe知识大赏第二期）的制作幕后：AI 写代码出画面，被擦掉的那块墙在本机用 SDXL 真擦了一遍。23 条消息、1,996 次 AI 操作、40 步去噪轨迹逐步可看。">
+<meta name="author" content="泽轩604">
+<link rel="canonical" href="https://zexuanw958-svg.github.io/zexuan-videos/2026-10-01-wuzhongshengyou/">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="泽轩604 · 视频幕后">
+<meta property="og:title" content="《无中生有》制作幕后">
+<meta property="og:description" content="《无中生有》（Vibe知识大赏第二期）的制作幕后：AI 写代码出画面，被擦掉的那块墙在本机用 SDXL 真擦了一遍。23 条消息、1,996 次 AI 操作、40 步去噪轨迹逐步可看。">
+<meta property="og:url" content="https://zexuanw958-svg.github.io/zexuan-videos/2026-10-01-wuzhongshengyou/">
+<meta property="og:image" content="https://zexuanw958-svg.github.io/zexuan-videos/2026-10-01-wuzhongshengyou/cover.jpg">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+<meta property="article:published_time" content="2026-10-02">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="《无中生有》制作幕后">
+<meta name="twitter:description" content="《无中生有》（Vibe知识大赏第二期）的制作幕后：AI 写代码出画面，被擦掉的那块墙在本机用 SDXL 真擦了一遍。23 条消息、1,996 次 AI 操作、40 步去噪轨迹逐步可看。">
+<meta name="twitter:image" content="https://zexuanw958-svg.github.io/zexuan-videos/2026-10-01-wuzhongshengyou/cover.jpg">
+<meta name="theme-color" content="#0E0F10">
+<link rel="preload" href="../fonts/zx-serif-700.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* 标题和引文用思源宋体（Noto Serif SC，SIL OFL 1.1），只保留本站用到的字，随仓库托管，不依赖 Google 字体 */
+@font-face { font-family: "ZX Serif"; src: url("../fonts/zx-serif-500.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
+@font-face { font-family: "ZX Serif"; src: url("../fonts/zx-serif-700.woff2") format("woff2"); font-weight: 700 900; font-display: swap; }
+/* 版式：整页就是这条片的暗房。顶上一条章节条，往下按制作顺序走：分工 → 流程 → 提示词 → 实测 → 文案 → 制作 → 成片 → 返修 → 发布。
+   照片和实测数据是主角；安全灯红 = Claude 主会话这一支和「补出来的东西」，冰蓝 = 出片进程这一支和「测量读数」。 */
+:root {
+  --bg: #0E0F10;
+  --panel: #17191B;
+  --panel-2: #1F2225;
+  --line: #2B2F33;
+  --ink: #ECE7DF;
+  --ink-2: #B4AFA7;
+  --ink-3: #7F7B75;
+  --safe: #E0543C;
+  --safe-soft: #E9897A;
+  --ice: #A9D6E2;
+  --ice-soft: #5E8D99;
+  --on-safe: #170806;
+  --shadow: 0 1px 2px rgba(0,0,0,.35), 0 10px 30px rgba(0,0,0,.35);
+  --display: "ZX Serif", "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
+  --body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, "Roboto Mono", monospace;
+  --en: Georgia, "Times New Roman", serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #EEF0EF; --panel: #FFFFFF; --panel-2: #E5E8E7; --line: #D3D8D6;
+    --ink: #16181A; --ink-2: #4A4F53; --ink-3: #7A8084;
+    --safe: #C23F29; --safe-soft: #E0806F; --ice: #2C7A8F; --ice-soft: #8FC3D0; --on-safe: #FFFFFF;
+    --shadow: 0 1px 2px rgba(0,0,0,.05), 0 8px 24px rgba(0,0,0,.06);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #EEF0EF; --panel: #FFFFFF; --panel-2: #E5E8E7; --line: #D3D8D6;
+  --ink: #16181A; --ink-2: #4A4F53; --ink-3: #7A8084;
+  --safe: #C23F29; --safe-soft: #E0806F; --ice: #2C7A8F; --ice-soft: #8FC3D0; --on-safe: #FFFFFF;
+  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 8px 24px rgba(0,0,0,.06);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.75; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; }
+a { color: var(--ice); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3, h4 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: .01em; font-weight: 700; }
+h2 { font-size: clamp(24px, 3vw, 32px); line-height: 1.35; }
+h3 { font-size: 19px; line-height: 1.45; }
+p { margin: 0; }
+:focus-visible { outline: 2px solid var(--ice); outline-offset: 3px; border-radius: 4px; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--ink-3); }
+.lead { color: var(--ink-2); max-width: 40em; }
+.muted { color: var(--ink-3); font-size: 13px; }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+.dot.s { background: var(--safe); } .dot.i { background: var(--ice); } .dot.k { background: var(--ink); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); padding-block: 0 96px; }
+
+/* 顶部章节条 */
+.chapters { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.chapters .inner { max-width: 1120px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); display: flex; overflow-x: auto; scrollbar-width: none; }
+.chapters .inner::-webkit-scrollbar { display: none; }
+.chapters a { flex: 1 0 auto; color: var(--ink-3); font-size: 12.5px; padding: 10px 11px; border-bottom: 2px solid transparent; white-space: nowrap; text-align: center; text-decoration: none; }
+.chapters a:hover, .chapters a.on { color: var(--ink); border-bottom-color: var(--safe); }
+
+section { padding-top: 88px; scroll-margin-top: 48px; }
+.sec-head { display: grid; gap: 12px; margin-bottom: 34px; }
+.stage { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.stage .n { font-family: var(--display); font-size: 20px; line-height: 1; color: var(--safe); }
+.stage .d { font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); }
+
+/* 开场 */
+.hero { padding-top: 52px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .92fr); gap: clamp(28px, 4vw, 56px); align-items: center; scroll-margin-top: 60px; }
+.hero h1 { font-size: clamp(30px, 4.2vw, 46px); line-height: 1.25; margin-top: 14px; }
+.hero h1 em { font-style: normal; color: var(--safe); display: block; }
+.hero .lead { margin-top: 18px; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-top: 28px; background: var(--line); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+.stat { background: var(--panel); padding: 14px 14px 12px; min-width: 0; }
+.stat b { display: block; font-family: var(--mono); font-size: 23px; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.stat b small { font-family: var(--body); font-size: 13px; font-weight: 400; color: var(--ink-2); margin-left: 3px; }
+.stat span { font-size: 12px; color: var(--ink-3); }
+
+.board { display: grid; gap: 12px; }
+.plate { position: relative; background: #0A0B0C; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); aspect-ratio: 600 / 698; max-width: 100%; }
+.plate canvas { display: block; width: 100%; height: 100%; }
+.plate .ro { position: absolute; font-family: var(--mono); font-size: 11.5px; color: #ECE7DF; text-shadow: 0 1px 3px rgba(0,0,0,.9); line-height: 1.45; pointer-events: none; }
+.plate .ro.tl { left: 12px; top: 10px; }
+.plate .ro.tr { right: 12px; top: 10px; text-align: right; }
+.plate .ro.tr b { display: block; font-size: 24px; font-weight: 500; color: #A9D6E2; }
+.plate .ro.bl { left: 12px; bottom: 10px; }
+.plate .ro .k { color: #9B968F; }
+.board-foot { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+button.act { font: 600 14px var(--body); color: var(--on-safe); background: var(--safe); border: 0; border-radius: 999px; padding: 9px 20px; cursor: pointer; }
+button.act:hover { filter: brightness(1.08); }
+button.act:disabled { opacity: .5; cursor: default; }
+button.ghost { font: 500 13px var(--body); color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+button.ghost:hover { color: var(--ink); border-color: var(--ink-3); }
+.seeds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.seedchip { border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font-size: 12.5px; color: var(--ink-3); background: var(--panel); min-width: 0; }
+.seedchip b { display: block; font-family: var(--mono); font-weight: 500; font-size: 11px; color: var(--ink-3); }
+.seedchip.on { color: var(--ink); border-color: var(--safe); }
+.seedchip.on b { color: var(--safe); }
+.board-msg { font-size: 13px; color: var(--ink-2); min-height: 1.6em; }
+
+/* 分工 */
+.share { display: grid; gap: 22px; border-radius: 14px; background: var(--panel); box-shadow: var(--shadow); padding: 22px clamp(14px, 2.6vw, 28px); }
+.sh-row { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 20px; align-items: start; }
+.sh-lab { display: grid; gap: 2px; }
+.sh-lab .nm { font-size: 14px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+.sh-lab b { font-family: var(--mono); font-size: 28px; font-weight: 500; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.sh-lab b small { font-family: var(--body); font-size: 14px; font-weight: 400; color: var(--ink-2); margin-left: 4px; }
+.sh-lab span.d { font-size: 12.5px; color: var(--ink-3); line-height: 1.55; }
+.units { display: flex; flex-wrap: wrap; gap: 3px; padding-top: 6px; }
+.units i { width: 10px; height: 10px; border-radius: 2px; }
+.sh-break { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); padding-top: 14px; border-top: 1px dashed var(--line); }
+.sh-break span b { font-family: var(--mono); font-weight: 500; color: var(--ink); margin-left: 4px; }
+.av { display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 999px; font: 500 10.5px/1 var(--mono); font-style: normal; }
+.av.me { background: var(--ink); color: var(--bg); }
+.av.xx { background: var(--safe); color: var(--on-safe); }
+.av.hp { background: var(--safe-soft); color: #1A0A07; }
+.av.pr { background: var(--ice); color: #0B1A1E; }
+.av.sb { background: var(--ice-soft); color: #0B1A1E; }
+.av.cx { background: var(--panel-2); color: var(--ink-2); border: 1px solid var(--line); }
+
+/* 图表通用 */
+.chart { border-radius: 14px; background: var(--panel); box-shadow: var(--shadow); padding: 20px clamp(14px, 2.4vw, 24px) 18px; }
+.chart-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px 20px; flex-wrap: wrap; margin-bottom: 14px; }
+.chart-h h3 { font-size: 18px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 12px; height: 8px; border-radius: 2px; display: inline-block; }
+.tl-scroll { overflow-x: auto; }
+
+/* 要求 */
+
+/* 选题 */
+
+/* 流程 + 提示词 */
+.who-legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: var(--ink-2); margin-top: 4px; }
+.who-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border-radius: 12px; background: var(--panel); overflow: hidden; box-shadow: var(--shadow); }
+.steps li { padding: 16px 14px; display: grid; gap: 6px; align-content: start; position: relative; border-left: 1px solid var(--line); min-width: 0; }
+.steps li:first-child { border-left: 0; }
+.steps li:not(:first-child)::before { content: ""; position: absolute; left: -7px; top: 22px; width: 12px; height: 12px; background: var(--panel); border-top: 1px solid var(--ink-3); border-right: 1px solid var(--ink-3); transform: rotate(45deg); }
+.steps .sn { font-family: var(--mono); font-size: 12px; color: var(--safe); }
+.steps b { font-size: 15px; font-weight: 600; }
+.steps p { font-size: 12.5px; color: var(--ink-2); line-height: 1.6; }
+.steps .who { display: flex; gap: 4px; margin-top: 4px; }
+.prompt-card { background: var(--panel); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; max-width: 820px; }
+.prompt-card .bar { padding: 10px 18px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.prompt-card pre { margin: 0; padding: 16px 18px 20px; white-space: pre-wrap; font: 15px/1.85 var(--body); color: var(--ink); }
+.story .idea { font-family: var(--display); font-size: 17px; line-height: 1.65; color: var(--ink); }
+
+/* 实测 */
+.rules { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+.hero > *, .rules > *, .insight > *, .covers > *, .split > * { min-width: 0; }
+.rules ol { margin: 0; padding-left: 1.3em; display: grid; gap: 10px; color: var(--ink-2); }
+.rules ol b { color: var(--ink); font-weight: 600; }
+.term { background: #111315; border: 1px solid #26292D; border-radius: 12px; overflow: hidden; min-width: 0; box-shadow: var(--shadow); }
+.term .bar { display: flex; gap: 6px; padding: 10px 12px; border-bottom: 1px solid #26292D; }
+.term .bar i { width: 10px; height: 10px; border-radius: 50%; background: #3A3E43; }
+.term pre { margin: 0; padding: 14px 18px; overflow-x: auto; font: 12.5px/1.9 var(--mono); color: #C9C4BC; }
+.term pre .c { color: #7F7B75; }
+.term pre .k { color: #A9D6E2; }
+.term pre .r { color: #EC7A65; }
+figure { margin: 0; min-width: 0; }
+figure > img { display: block; width: 100%; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); }
+figcaption { font-size: 12.5px; color: var(--ink-3); margin-top: 7px; line-height: 1.6; }
+figcaption b { color: var(--ink-2); font-weight: 600; }
+.wide-fig { margin-top: 36px; }
+.c5lab { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin-top: 6px; font-size: 12px; color: var(--ink-2); text-align: center; }
+.c5lab span.s { color: var(--safe); }
+
+.traj { margin-top: 40px; }
+.tj-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.tj-panels figure { position: relative; }
+.tj-panels img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 4px; background: #0A0B0C; }
+.tj-panels .cap { position: absolute; left: 8px; bottom: 8px; font-size: 12px; color: #ECE7DF; background: rgba(0,0,0,.62); padding: 3px 8px; border-radius: 3px; }
+.tj-panels .empty { position: absolute; inset: 0; display: grid; place-items: center; color: #9B968F; font-size: 13px; text-align: center; padding: 20px; background: #0A0B0C; border-radius: 4px; }
+.tj-ctl { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; margin-top: 14px; }
+.tj-ctl input[type=range] { width: 100%; accent-color: var(--safe); }
+.tj-read { display: flex; flex-wrap: wrap; gap: 6px 20px; font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); margin-top: 10px; }
+.tj-read b { color: var(--ink); font-weight: 500; }
+.tj-read .big { color: var(--ice); }
+.noise-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin-top: 36px; }
+.noise-strip figure img { aspect-ratio: 4 / 3; object-fit: cover; border-radius: 4px; border: 0; }
+.noise-strip figcaption { font-family: var(--mono); font-size: 11.5px; margin-top: 5px; }
+.noise-strip figcaption b { color: var(--ice); font-weight: 500; }
+
+.insight { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; margin-top: 44px; align-items: start; }
+.insight p + p { margin-top: 10px; }
+.big-quote { font-family: var(--display); font-size: 23px; line-height: 1.5; color: var(--safe); }
+blockquote { margin: 0; padding: 14px 18px; border-left: 2px solid var(--safe); background: var(--panel); border-radius: 0 10px 10px 0; color: var(--ink); }
+blockquote .who { display: block; font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); margin-bottom: 4px; }
+blockquote p { font-family: var(--display); font-size: 16px; line-height: 1.7; }
+blockquote p + .who { margin-top: 12px; }
+blockquote .en { display: block; font-family: var(--en); font-style: italic; font-size: 14px; color: var(--ink-3); }
+
+/* 文案 */
+.versions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-radius: 12px; background: var(--panel); overflow: hidden; box-shadow: var(--shadow); }
+.ver { padding: 14px 16px; display: grid; gap: 4px; position: relative; border-left: 1px solid var(--line); min-width: 0; align-content: start; }
+.ver:first-child { border-left: 0; }
+.ver:not(:first-child)::before { content: ""; position: absolute; left: -7px; top: 20px; width: 12px; height: 12px; background: var(--panel); border-top: 1px solid var(--ink-3); border-right: 1px solid var(--ink-3); transform: rotate(45deg); }
+.ver .v { font-family: var(--mono); font-size: 12px; color: var(--safe); }
+.ver b { font-size: 14.5px; font-weight: 600; }
+.ver p { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; }
+.facts { margin-top: 32px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+.fact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr); gap: 18px; padding: 13px 20px; background: var(--panel); border-top: 1px solid var(--line); font-size: 13.5px; }
+.fact:first-child { border-top: 0; }
+.fact .a { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--safe); }
+.fact .b { color: var(--ink-2); }
+.fact .c { color: var(--ink); font-family: var(--display); }
+.fact-h { background: var(--panel-2); font-size: 12px; color: var(--ink-3); padding-block: 10px; }
+.fact-h span { text-decoration: none !important; font-family: var(--body) !important; color: var(--ink-3) !important; }
+
+/* 制作 */
+.film { min-width: 820px; display: grid; grid-template-columns: 96px minmax(0, 1fr); row-gap: 8px; column-gap: 12px; }
+.f-lab { font-size: 12.5px; color: var(--ink-2); align-self: center; line-height: 1.35; }
+.f-lab small { display: block; color: var(--ink-3); font-size: 11px; }
+.f-track { position: relative; height: 30px; background: var(--panel-2); border-radius: 4px; }
+.f-b { position: absolute; top: 3px; bottom: 3px; border-radius: 3px; overflow: hidden; font-size: 11px; line-height: 24px; padding: 0 6px; white-space: nowrap; text-overflow: ellipsis; cursor: default; }
+.f-b.ch { top: 0; bottom: 0; line-height: 30px; background: var(--panel); color: var(--ink-2); border-right: 2px solid var(--panel-2); border-radius: 0; text-align: center; }
+.f-b.p0 { background: var(--ice); color: #0B1A1E; }
+.f-b.p1 { background: var(--ice-soft); color: #0B1A1E; }
+.f-b.re { background: var(--safe); color: var(--on-safe); }
+.f-b.ft { background: var(--ink-3); color: var(--bg); }
+.f-axis { position: relative; height: 18px; }
+.f-axis span { position: absolute; transform: translateX(-50%); font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+.principles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: 14px; overflow: hidden; margin-top: 30px; box-shadow: var(--shadow); }
+.principles > div { background: var(--panel); padding: 18px 20px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.principles b { font-size: 15px; font-weight: 600; }
+.principles p { font-size: 13.5px; color: var(--ink-2); }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; margin-bottom: 30px; }
+.split ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; color: var(--ink-2); font-size: 14.5px; }
+.split ul b { color: var(--ink); font-weight: 600; }
+
+/* 成片画廊 */
+.gal-h { margin: 44px 0 14px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.gal-h:first-of-type { margin-top: 0; }
+.gal-h h3 { font-size: 18px; }
+.gal-h .tc { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 14px; }
+.gallery.g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.gallery figure img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; }
+.gallery figcaption { font-size: 13px; }
+.gallery figcaption .t { font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); margin-right: 6px; }
+
+/* 返修 */
+.story { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: stretch; }
+.story > div { background: var(--panel); border-radius: 12px; padding: 18px 20px; display: grid; gap: 10px; align-content: start; box-shadow: var(--shadow); min-width: 0; }
+.story .when { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.story p { font-size: 14px; color: var(--ink-2); }
+.bar-demo { height: 14px; border-radius: 2px; background: linear-gradient(90deg, #6f6a62 0%, #8e8478 30%, transparent 30.1%), #0A0B0C; position: relative; overflow: hidden; border: 1px solid var(--line); }
+.bar-demo::after { content: ""; position: absolute; left: 30%; right: 0; top: 0; bottom: 0; background-image: radial-gradient(#cfcac2 .6px, transparent .7px), radial-gradient(#77726b .6px, transparent .7px); background-size: 3px 3px, 4px 4px; background-position: 0 0, 1px 2px; opacity: .8; }
+.pits { margin-top: 34px; display: grid; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+.pit { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 13px 20px; background: var(--panel); border-top: 1px solid var(--line); font-size: 14px; }
+.pit:first-child { border-top: 0; }
+.pit .q { color: var(--ink); }
+.pit .a { color: var(--ink-2); }
+.pit-h { background: var(--panel-2); font-size: 12px; color: var(--ink-3); padding-block: 10px; }
+
+/* 发布 */
+.covers { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); gap: 16px; align-items: start; }
+.covers .side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.covers .side figure:first-child { grid-column: 1 / -1; }
+.post { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 34px; }
+.post > div { border-top: 2px solid var(--safe); padding-top: 14px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.post p { font-size: 14px; color: var(--ink-2); }
+.post .fig { font-family: var(--mono); font-size: 26px; font-weight: 500; line-height: 1.1; }
+.post .ttl { font-family: var(--display); font-size: 15px; color: var(--ink); background: var(--panel); border-radius: 8px; padding: 8px 10px; line-height: 1.6; }
+
+/* 收获 / 问答 */
+.takeaways { display: grid; }
+.tk { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 20px; padding: 26px 0; border-top: 1px solid var(--line); }
+.tk:last-child { border-bottom: 1px solid var(--line); }
+.tk .n { font-family: var(--display); font-size: 40px; line-height: 1; color: var(--ink-3); }
+.tk h3 { font-size: 21px; margin-bottom: 8px; }
+.tk p { color: var(--ink-2); max-width: 46em; }
+.faq { display: grid; border-top: 1px solid var(--line); }
+.faq > div { padding: 20px 0; border-bottom: 1px solid var(--line); display: grid; gap: 8px; }
+.faq h3 { font-size: 17.5px; }
+.faq p { color: var(--ink-2); max-width: 48em; }
+.author { margin-top: 40px; padding: 22px clamp(14px, 2.6vw, 26px); border-radius: 14px; background: var(--panel); box-shadow: var(--shadow); display: grid; gap: 8px; }
+footer { margin-top: 56px; display: grid; gap: 10px; font-size: 13px; color: var(--ink-3); max-width: 64em; }
+footer ol { margin: 0; padding-left: 1.3em; display: grid; gap: 3px; }
+footer h4 { font-family: var(--body); font-size: 13px; color: var(--ink-2); font-weight: 600; margin-top: 8px; }
+
+#tip { position: fixed; z-index: 20; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 12.5px; line-height: 1.5; padding: 7px 10px; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,.3); max-width: 300px; }
+
+@media (max-width: 900px) {
+  .hero, .rules, .insight, .story, .covers, .split { grid-template-columns: 1fr; }
+  .board { max-width: 520px; }
+  .gallery, .gallery.g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .principles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .steps li:nth-child(4) { border-left: 0; }
+  .steps li:nth-child(4)::before { display: none; }
+  .steps li:nth-child(n+4) { border-top: 1px solid var(--line); }
+  .versions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ver:nth-child(3) { border-left: 0; }
+  .ver:nth-child(3)::before { display: none; }
+  .ver:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .post { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sh-row { grid-template-columns: 1fr; gap: 8px; }
+  .units i { width: 8px; height: 8px; }
+  .steps { grid-template-columns: 1fr; }
+  .steps li { border-left: 0 !important; border-top: 1px solid var(--line); }
+  .steps li:first-child { border-top: 0; }
+  .steps li::before { display: none; }
+  .gallery, .gallery.g4, .principles, .post { grid-template-columns: 1fr; }
+  .versions { grid-template-columns: 1fr; }
+  .ver { border-left: 0 !important; border-top: 1px solid var(--line); }
+  .ver:first-child { border-top: 0; }
+  .ver::before { display: none; }
+  .fact { grid-template-columns: 1fr; gap: 3px; }
+  .fact-h { display: none; }
+  .pit { grid-template-columns: 1fr; gap: 4px; }
+  .pit-h { display: none; }
+  .tk { grid-template-columns: 1fr; gap: 8px; }
+  .noise-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .c5lab { font-size: 10.5px; }
+  .tj-ctl { grid-template-columns: auto minmax(0, 1fr); }
+  .tj-ctl .stepnum { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+</style>
+</head>
+
+<body>
+<nav class="chapters" aria-label="章节">
+  <div class="inner">
+    <a href="#top">开场</a>
+    <a href="#share">分工</a>
+    <a href="#flow">流程</a>
+    <a href="#prompt">提示词</a>
+    <a href="#lab">实测</a>
+    <a href="#script">文案</a>
+    <a href="#make">制作</a>
+    <a href="#film">成片</a>
+    <a href="#fix">返修</a>
+    <a href="#ship">发布</a>
+    <a href="#lesson">收获</a>
+    <a href="#faq">问答</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<header class="hero" id="top">
+  <div>
+    <div class="eyebrow"><a href="../" style="color:inherit">泽轩604 · 视频幕后</a> · 2026.10.01</div>
+    <h1>擦掉两个路人，补出一面墙。<em>这条片是怎么做出来的</em></h1>
+    <p class="lead">成片《无中生有》，4 分 20 秒，「Vibe知识大赏」第二期，讲手机里「AI 消除」背后的扩散模型。片里没有口播，也没有一个镜头是拍的，画面全是 AI 写代码渲出来的。被擦掉的那块墙到底怎么补出来的，我们也在自己电脑上真擦了一遍。我做的就是提要求、看片、说哪里不对。</p>
+    <div class="stats">
+      <div class="stat"><b>72<small>条</small></b><span>字幕，每条过核查</span></div>
+      <div class="stat"><b>23<small>条</small></b><span>我发的消息</span></div>
+      <div class="stat"><b>1,996<small>次</small></b><span>AI 动手</span></div>
+      <div class="stat"><b>20<small>个</small></b><span>派出去的子 agent</span></div>
+    </div>
+  </div>
+
+  <div class="board" id="board">
+    <div class="plate">
+      <canvas id="plate" width="600" height="698" aria-label="片子里那两个路人。点下面的按钮，看 AI 每次在这里补出什么"></canvas>
+      <div class="ro tl"><span class="k">本机实测 · SDXL inpainting</span><br><span id="ro-seed">原图 · 还没擦</span></div>
+      <div class="ro tr"><span class="k">STEP</span><b id="ro-step">-- / 40</b></div>
+      <div class="ro bl"><span class="k">原图还剩</span> <span id="ro-sig">√ᾱ = 1.000</span></div>
+    </div>
+    <div class="board-foot">
+      <button class="act" id="erase" type="button">点一下，消除</button>
+      <button class="ghost" id="reset" type="button" hidden>回到原图</button>
+    </div>
+    <div class="seeds" aria-live="polite">
+      <div class="seedchip" data-s="1"><b>种子 1</b>一道暗红的门洞</div>
+      <div class="seedchip" data-s="2"><b>种子 2</b>一条垂下的红布</div>
+      <div class="seedchip" data-s="3"><b>种子 3</b>一段砖墙</div>
+    </div>
+    <p class="board-msg" id="board-msg">照片里这两个人身后是什么，相机根本没拍到。点按钮，让 AI 补一次。</p>
+    <p class="muted">三次补出来的结果是实测原图。雪花退去的过程是网页按扩散公式做的示意，真实的每一步在下面「实测」里可以拖着看。</p>
+  </div>
+</header>
+
+<section id="share">
+  <div class="sec-head">
+    <div class="eyebrow">分工</div>
+    <h2>我动嘴，AI 动手</h2>
+    <p class="lead">我亲手做的，就是开工时提要求、中途看片、最后发布。查资料、写文案、跑实验、写 Remotion 代码、渲染、自检，都是 AI 做的。Claude Code 的主会话负责跟我对接，再把活派下去。下面的数都是从当天的对话记录里数出来的。</p>
+  </div>
+  <div class="share">
+    <div class="sh-row">
+      <div class="sh-lab"><span class="nm"><i class="av me">我</i>我</span><b>23<small>条消息</small></b><span class="d">提要求、看片后说哪里不对、拍板</span></div>
+      <div class="units" data-n="23" data-c="var(--ink)"></div>
+    </div>
+    <div class="sh-row">
+      <div class="sh-lab"><span class="nm"><i class="av xx">CC</i>Claude（主会话）</span><b>275<small>次操作</small></b><span class="d">选题、结构稿、写文案、派活、审片、标题封面、登记发布</span></div>
+      <div class="units" data-n="275" data-c="var(--safe)"></div>
+    </div>
+    <div class="sh-row">
+      <div class="sh-lab"><span class="nm"><i class="av hp">助</i>Claude 派的 2 个助手</span><b>293<small>次操作</small></b><span class="d">事实核查 186 次（搜了 57 次，抓了 21 个网页）；本机扩散实测 107 次</span></div>
+      <div class="units" data-n="293" data-c="var(--safe-soft)"></div>
+    </div>
+    <div class="sh-row">
+      <div class="sh-lab"><span class="nm"><i class="av pr">出</i>出片进程</span><b>304<small>次操作</small></b><span class="d">另开的一个 Claude Code，专门做画面：共享层、第一幕、拆包、总装、自检、渲染</span></div>
+      <div class="units" data-n="304" data-c="var(--ice)"></div>
+    </div>
+    <div class="sh-row">
+      <div class="sh-lab"><span class="nm"><i class="av sb">包</i>出片进程派的 18 个子 agent</span><b>1,124<small>次操作</small></b><span class="d">7 个画面包、3 次续做、6 次返修、找墨水实拍、渲染前审查</span></div>
+      <div class="units" data-n="1124" data-c="var(--ice-soft)"></div>
+    </div>
+    <div class="sh-break"><span>跑命令<b>1,350</b></span><span>读文件<b>386</b></span><span>上网查资料<b>107</b></span><span>写和改文件<b>87</b></span><span>派活和传话<b>17</b></span><span>其他<b>49</b></span></div>
+    <p class="muted">一格 = 5 次。统计的是 10 月 1 日这期的两段主对话、两个助手、出片进程和它的 18 个子 agent 的记录，全部跑在 Claude Opus 5.5 上。「操作」指 AI 用一次工具，比如跑一条命令、读一个文件、搜一次网页。封面是 Codex 画的，没算在里面。</p>
+  </div>
+</section>
+
+<section id="flow">
+  <div class="sec-head">
+    <div class="eyebrow">全流程</div>
+    <h2>六步走完，AI 接力</h2>
+    <p class="lead">Claude 一边写文案，一边派两个助手去核查和实测。文案定稿后，出片进程接手做画面，又拆出 7 个画面包同时开工。我在开头提要求，最后看成片。</p>
+    <div class="who-legend">
+      <span><i class="av me">我</i>我：提要求、看片、拍板</span>
+      <span><i class="av xx">CC</i>Claude：对接、写文案、派活、审片</span>
+      <span><i class="av hp">助</i>Claude 派的助手</span>
+      <span><i class="av pr">出</i>出片进程</span>
+      <span><i class="av sb">包</i>出片进程派的子 agent</span>
+      <span><i class="av cx">Cx</i>Codex：画封面</span>
+    </div>
+  </div>
+  <ol class="steps">
+    <li><span class="sn">01</span><b>定选题</b><p>从手机的「AI 消除」切进去，讲扩散模型。</p><span class="who"><i class="av me">我</i><i class="av xx">CC</i></span></li>
+    <li><span class="sn">02</span><b>核查 + 实测</b><p>一个助手上网找一手出处，另一个在我电脑上用开源模型真擦一遍，两边同时跑。</p><span class="who"><i class="av hp">助</i><i class="av hp">助</i></span></li>
+    <li><span class="sn">03</span><b>写文案</b><p>按核查和实测的结果改了四版，定成 72 条中英字幕。</p><span class="who"><i class="av xx">CC</i></span></li>
+    <li><span class="sn">04</span><b>做画面</b><p>出片进程先做第一幕，后面拆成 7 个画面包，派子 agent 同时做，再总装成片。</p><span class="who"><i class="av pr">出</i><i class="av sb">包</i></span></li>
+    <li><span class="sn">05</span><b>审片返修</b><p>Claude 先审，我最后看成片，挑出的问题改完重渲。</p><span class="who"><i class="av xx">CC</i><i class="av me">我</i><i class="av pr">出</i></span></li>
+    <li><span class="sn">06</span><b>封面发布</b><p>Claude 出构图稿，Codex 画三种比例的封面，我发到抖音。</p><span class="who"><i class="av cx">Cx</i><i class="av me">我</i></span></li>
+  </ol>
+</section>
+
+<section id="prompt">
+  <div class="sec-head">
+    <div class="stage"><span class="n">①</span><span class="d">开工</span></div>
+    <h2>开工时，我只给了这几句话</h2>
+    <p class="lead">要求在开头一次说清楚，后面基本没再插手。下面是整理过的提示词。</p>
+  </div>
+  <div class="prompt-card">
+    <div class="bar"><span>给 Claude 的提示词</span></div>
+<pre>做一期「Vibe知识大赏」：4 分钟左右的横屏知识动画，讲手机「AI 消除」背后的扩散模型。纯音乐加中英字幕，不配音。
+
+标准只有一个：观众看完会怀疑「这真的是 AI 做的吗？」放开做，拿出你最好的东西，不用考虑成本。
+
+文案要让外行看得懂，每一段都给出新东西，能不用术语就不用。
+
+要验证的说法，先找网上的官方证据，再在本机用开源模型实测，不用我动手。
+
+文案写好直接进入制作，推理强度开 high，做完把成片给我看。</pre>
+  </div>
+</section>
+
+<section id="lab">
+  <div class="sec-head">
+    <div class="stage"><span class="n">②</span><span class="d">本机实测</span></div>
+    <h2>被擦掉的那块墙，我们在电脑上真擦了一遍</h2>
+    <p class="lead">Claude 派了一个助手，在我电脑上装好开源的 SDXL 补图模型，把开场那张照片真擦了一遍。片子里的补图、去噪的每一步、加噪序列，都是这次实测的原始输出。整个实测没花钱。</p>
+  </div>
+
+  <div class="rules">
+    <ol>
+      <li><b>先找人。</b>分割模型 Mask2Former 在照片里找到 20 个人，挑出贴着城墙站的两个：白 T 恤男生和红衣男子。擦掉的面积占全图 5.3%。</li>
+      <li><b>同一块地方，擦三次。</b>换随机种子 1、2、3，各补一次，每次 40 步，一张 20 到 30 秒。</li>
+      <li><b>同一个种子，再擦一次。</b>种子 1 跑了 3 次，786,432 个像素里 0 个不同。随机性全在起点那屏雪花里。</li>
+      <li><b>每一步都录下来。</b>40 步里，每一步「此刻的画面」和「它此刻猜的最终画面」都存成图，下面可以拖着看。</li>
+      <li><b>反过来加噪。</b>把原图按训练时的公式一层层撒雪花，加到最后一步，原图还剩 6.8%。</li>
+    </ol>
+    <div>
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="c"># 本机运行，开源模型，全程免费</span>
+model     <span class="k">stable-diffusion-xl-1.0-inpainting-0.1</span>
+prompt    "empty scenic place, no people, photo"
+negative  "people, person, crowd"
+strength  <span class="r">0.99</span>   <span class="c"># 起点里还留着 9.8% 的原图</span>
+steps     <span class="k">40</span>     <span class="c"># 实际执行的步数</span>
+guidance  7.5
+seeds     1, 2, 3 <span class="c"># 外加种子 1 复跑两次</span></pre>
+      </div>
+      <p class="muted" style="margin-top:8px">开场照片来自 Wikimedia Commons：Dquai 拍的山海关老龙头（2006 年，CC BY-SA 4.0）。</p>
+      <figure style="margin-top:18px"><img src="img/x-persons.jpg" alt="分割模型在照片里找到的 20 个人，选中的两个标红" loading="lazy"><figcaption><b>第 1 步：找人。</b>20 个人都被框出来，选中的两个标红。</figcaption></figure>
+    </div>
+  </div>
+
+  <figure class="wide-fig"><img src="img/x-compare5.jpg" alt="五联图：原图、要擦掉的地方、种子 1、种子 2、种子 3" loading="lazy">
+    <div class="c5lab"><span>原图</span><span>要擦掉的地方</span><span class="s">种子 1</span><span class="s">种子 2</span><span class="s">种子 3</span></div>
+    <figcaption><b>第 2 步：擦三次。</b>种子 1 补出一道暗红的门洞，种子 2 补出一条从墙头垂下的红布，种子 3 补出一段砖墙。两个人身后原本是什么，照片里根本没拍到，三个版本都是模型现编的。</figcaption></figure>
+
+  <div class="traj chart">
+    <div class="chart-h"><h3>第 4 步：它擦的每一步</h3><span class="muted">种子 1 · 40 步 · 拖动看任意一步</span></div>
+    <div class="tj-panels">
+      <figure><img id="tj-n" src="img/traj/n00.jpg" alt="此刻的画面：起点，几乎全是彩色雪花"><span class="cap">此刻的画面</span></figure>
+      <figure><img id="tj-x" src="img/traj/x01.jpg" alt="它此刻猜的最终画面" hidden><div class="empty" id="tj-empty">第 0 步：还没开始猜。<br>往右拖一格看看。</div><span class="cap">它此刻猜的最终画面</span></figure>
+    </div>
+    <div class="tj-ctl">
+      <button class="ghost" id="tj-play" type="button">▶ 播放</button>
+      <input type="range" id="tj-range" min="0" max="40" value="0" step="1" aria-label="去噪步数">
+      <span class="stepnum mono" id="tj-step">0 / 40</span>
+    </div>
+    <div class="tj-read"><span>timestep <b id="tj-t">937</b></span><span>σ <b id="tj-s">10.195</b></span><span>原图信号 √ᾱ <b class="big" id="tj-a">0.098</b></span></div>
+    <p class="muted" style="margin-top:10px">左边是模型手里真实的「潜变量」解码出来的样子，所以雪花是彩色色块。右边是它每一步对最终结果的猜测：第 1 步就猜出「这里是一段墙」，只是很糊；第 12 步前后那块位置开始泛红，第 15 到 18 步，那根暗红的立柱一点点清楚起来。</p>
+  </div>
+
+  <div class="noise-strip" aria-label="加噪序列">
+    <figure><img src="img/x-noise-00.jpg" alt="原图" loading="lazy"><figcaption>原图 <b>1.000</b></figcaption></figure>
+    <figure><img src="img/x-noise-06.jpg" alt="t=263" loading="lazy"><figcaption>t=263 <b>0.808</b></figcaption></figure>
+    <figure><img src="img/x-noise-11.jpg" alt="t=526" loading="lazy"><figcaption>t=526 <b>0.493</b></figcaption></figure>
+    <figure><img src="img/x-noise-16.jpg" alt="t=789" loading="lazy"><figcaption>t=789 <b>0.201</b></figcaption></figure>
+    <figure><img src="img/x-noise-20.jpg" alt="t=999" loading="lazy"><figcaption>t=999 <b>0.068</b></figcaption></figure>
+  </div>
+  <p class="muted" style="margin-top:8px">第 5 步：按 x<sub>t</sub> = √ᾱ·x<sub>0</sub> + √(1−ᾱ)·ε 一层层撒雪花。蓝色数字是原图还剩多少，最后一帧肉眼看是纯雪花，按公式原图还占 6.8%。</p>
+
+  <div class="insight">
+    <div>
+      <p class="big-quote">实测改了文案，还送了一个结尾。</p>
+      <p class="lead" style="margin-top:12px">文案原本写的是「三次，三面不同的墙」。实测补出来的是三样东西，这条字幕就改成了「三个完全不同的答案」。</p>
+      <p class="lead">还有一个意外。起点那屏雪花里还留着 9.8% 的原图，被擦掉的红衣男子也在里面，所以有两次补出了红色。用纯雪花起步的对照组，这个位置一次红色都没出现。这个意外进了片子，片尾又拿它去接记忆实验。</p>
+    </div>
+    <blockquote>
+      <span class="who">第 33 条 · 112.5 秒</span>
+      <p>而且起点里，还藏着一丝被擦掉的人影。<span class="en">And the starting noise still held a faint trace of the erased man.</span></p>
+      <span class="who">第 34 条 · 116.5 秒</span>
+      <p>所以有两次，补出了他衣服的红。<span class="en">So twice, it filled in the red of his shirt.</span></p>
+      <span class="who">第 67 条 · 238 秒</span>
+      <p>一个词，就像那一丝红影，能把补出来的画面带偏。<span class="en">One word, like that faint red trace, can bend what gets filled in.</span></p>
+    </blockquote>
+  </div>
+</section>
+
+<section id="script">
+  <div class="sec-head">
+    <div class="stage"><span class="n">③</span><span class="d">文案</span></div>
+    <h2>72 条字幕，每个数字都过了核查</h2>
+    <p class="lead">Claude 先写结构稿，再写成字幕。核查助手同时去网上找一手出处，搜了 57 次，抓了 21 个网页。文案按核查改一版，按实测再改一版，前后四版。</p>
+  </div>
+  <div class="versions">
+    <div class="ver"><span class="v">v1</span><b>结构稿</b><p>先搭骨架和草稿字幕。拿不准的数字先标 ⏳，不许自己编。</p></div>
+    <div class="ver"><span class="v">v2</span><b>按核查改</b><p>改了 20 多条说法，删掉一条站不住的，加进两条有一手出处的新料。</p></div>
+    <div class="ver"><span class="v">v3</span><b>按实测改</b><p>「三面墙」改成「三个答案」，加进「起点里的人影」，⏳ 全部清掉。</p></div>
+    <div class="ver"><span class="v">v4</span><b>改一个字</b><p>画面包发现种子 3 只是砖偏红，「三次都补出红」改成「有两次」。</p></div>
+  </div>
+
+  <div class="facts">
+    <div class="fact fact-h"><span>原来想说的</span><span>核查发现</span><span>上屏的说法</span></div>
+    <div class="fact"><span class="a">你手机里的消除，就是扩散模型</span><span class="b">官方写明用了扩散模型的，只查到三星 S24 一家</span><span class="c">今天，很多手机的 AI 消除，用的都是生成式 AI。</span></div>
+    <div class="fact"><span class="a">同一个地方擦几次，每次都不一样</span><span class="b">只有 Adobe、谷歌、三星和开源模型有官方说法，不能说成所有手机</span><span class="c">Adobe 的 AI 消除，一次就给你 3 个不同的答案。</span></div>
+    <div class="fact"><span class="a">「撞碎」组估车速 40.8 英里，还记得碎玻璃</span><span class="b">网上流行版把两个实验的数字拼在了一起</span><span class="c">只用实验二：「撞碎」组 32% 说看到碎玻璃，「撞到」组 14%。</span></div>
+    <div class="fact"><span class="a">米开朗基罗：雕像本来就在石头里</span><span class="b">找不到任何出自他本人的证据</span><span class="c">不用这句。</span></div>
+    <div class="fact"><span class="a">1905 年，爱因斯坦解释了布朗运动</span><span class="b">他原文说「可能就是」布朗运动，没下判断</span><span class="c">1905 年，爱因斯坦算出：水分子不停乱撞，就会让小颗粒乱跑。</span></div>
+    <div class="fact"><span class="a">Stable Diffusion 看过几十亿张图</span><span class="b">官方只说训练集是 LAION-2B（英文）及其子集，算不出「看过多少张」</span><span class="c">它的老师，是 20 多亿张网图。</span></div>
+    <div class="fact"><span class="a">墨水永远不可能自己聚回一滴</span><span class="b">物理上不禁止，只是几率小到永远等不到</span><span class="c">它会自己聚回一滴吗？永远等不到。</span></div>
+    <div class="fact"><span class="a">布朗看见花粉在水里乱动</span><span class="b">乱动的是花粉里的小颗粒，不是花粉粒本身</span><span class="c">花粉里的小颗粒，在水里一刻不停地乱动。</span></div>
+  </div>
+  <p class="muted" style="margin-top:10px">核查还挖出两处新料，都用上了：2015 年那篇开山论文自己就做过补图（挖掉树皮照片的中心再补回来），作者本人说当时画得很糊，「得眯着眼才认出是辆卡车」。</p>
+</section>
+
+<section id="make">
+  <div class="sec-head">
+    <div class="stage"><span class="n">④</span><span class="d">制作</span></div>
+    <h2>第一幕自己做，后面拆成 7 包同时做</h2>
+    <p class="lead">出片进程是另开的一个 Claude Code，专门做画面（Remotion，用 React 写视频的框架）。它先搭好全片共用的东西：字幕、章节签、雪花、照片的推镜。然后自己把第一幕做到满意，再按章拆成 7 个画面包，派 7 个子 agent 同时开工，自己负责总装、返修和自检。画面做完，配上音乐，渲成 1080P 30 帧的成片。</p>
+  </div>
+
+  <div class="chart">
+    <div class="chart-h">
+      <h3>成片 4:20 拆开看</h3>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--ice)"></i>出片进程自己做</span>
+        <span><i class="sw" style="background:var(--ice-soft)"></i>子 agent 做</span>
+        <span><i class="sw" style="background:var(--safe)"></i>本机实测的输出</span>
+        <span><i class="sw" style="background:var(--ink-3)"></i>真实素材</span>
+      </div>
+    </div>
+    <div class="tl-scroll"><div class="film" id="filmchart"></div></div>
+    <p class="muted" style="margin-top:10px">最上面一行是片子左上角的章节签。实测输出和真实素材的色块是大致位置，误差在 1 秒左右。</p>
+  </div>
+
+  <div class="principles">
+    <div><b>能用真的，就不画</b><p>照片是真照片，补图和去噪轨迹是实测输出，墨水是 Pexels 的实拍。示意的地方，画面上都标了「示意」。</p></div>
+    <div><b>数据本身就是画面</b><p>「0 个像素不同」是实算的差值图；第三章在我电脑上真训练了一个小去噪网络；三张补图叠在一起的结构线，是从图里实算出来的。</p></div>
+  </div>
+</section>
+
+<section id="film">
+  <div class="sec-head">
+    <div class="eyebrow">成片</div>
+    <h2>一站一站看成片</h2>
+    <p class="lead">左上角的章节签①到⑤标着讲到了哪里。下面按章节放截图，每张配上那一刻的字幕和画面里做了什么。</p>
+  </div>
+
+  <div class="gal-h"><h3>开场 + ① 它在编</h3><span class="tc">0 – 26 s · 出片进程自己做</span></div>
+  <div class="gallery">
+    <figure><img src="img/v-crowd.jpg" alt="长城上的游客照片，满屏人头" loading="lazy"><figcaption><span class="t">0.1 s</span><b>「国庆的照片，全是人头。」</b>照片从雪花里显影，推镜时近处的人比远处的城楼动得快。</figcaption></figure>
+    <figure><img src="img/v-erased.jpg" alt="两个路人被擦掉，原处补成了墙" loading="lazy"><figcaption><span class="t">3.3 s</span><b>「点一下，路人全没了。」</b>两个人化成雪花，实测补好的那块墙显影出来。</figcaption></figure>
+    <figure><img src="img/v-title.jpg" alt="片名卡：无中生有" loading="lazy"><figcaption><span class="t">7 s</span><b>《无中生有》</b>片名也是从雪花里显影出来的，副标题就是这期要回答的问题。</figcaption></figure>
+    <figure><img src="img/v-erase2.jpg" alt="同一个洞重新灌满雪花" loading="lazy"><figcaption><span class="t">10.3 s</span><b>「同一个地方，再擦一次。」</b>洞里重新灌满雪花，换一个新种子。</figcaption></figure>
+    <figure><img src="img/v-triptych.jpg" alt="三张补图满屏并排" loading="lazy"><figcaption><span class="t">17.3 s</span><b>「三次，三个完全不同的答案。」</b>三张实测补图满屏砸下来，全片第一个爽点。</figcaption></figure>
+    <figure><img src="img/v-lines.jpg" alt="三张图的结构线叠在一起" loading="lazy"><figcaption><span class="t">20.5 s</span><b>「它不是在还原，是在编。」</b>三张图里补出来那块的结构线飞到一起，走向完全对不上。</figcaption></figure>
+  </div>
+
+  <div class="gal-h"><h3>② 它怎么编</h3><span class="tc">26 – 130 s · 墨水、加噪、去噪、种子</span></div>
+  <div class="gallery">
+    <figure><img src="img/v-ink.jpg" alt="一滴墨落进水杯" loading="lazy"><figcaption><span class="t">29 s</span><b>「一滴墨，滴进一杯清水。」</b>Pexels 实拍，去色成暗房里的黑白。</figcaption></figure>
+    <figure><img src="img/v-reverse.jpg" alt="墨水倒放聚回" loading="lazy"><figcaption><span class="t">39 s</span><b>「AI 学的，就是把这件事倒着放。」</b>右上角的时间箭头翻过来，整段倒放，墨收回成一颗墨珠。</figcaption></figure>
+    <figure><img src="img/v-model.jpg" alt="杯里的水撒上雪花，标出扩散模型" loading="lazy"><figcaption><span class="t">46 s</span><b>「所以，它叫扩散模型。」</b>杯里的水被撒上雪花，红色的「扩散」接上「模型」。</figcaption></figure>
+    <figure><img src="img/v-holesnow.jpg" alt="洞里先填满雪花" loading="lazy"><figcaption><span class="t">70 s</span><b>「回到那块墙：洞里先填满雪花。」</b>墙从雪花里出来了，洞没出来。</figcaption></figure>
+    <figure><img src="img/v-traj.jpg" alt="去噪轨迹两栏，第 10 步" loading="lazy"><figcaption><span class="t">80 – 93 s</span><b>「它擦的每一步，我们都录了下来。」</b>左边此刻的画面，右边它猜的最终画面，步数跟着音乐的重音跳。</figcaption></figure>
+    <figure><img src="img/v-step40.jpg" alt="第 40 步，墙补好" loading="lazy"><figcaption><span class="t">93.8 s</span><b>「第 40 步：一块相机从没拍到过的墙。」</b>两栏合成一整屏，推开回到整张照片。</figcaption></figure>
+    <figure><img src="img/v-seeds.jpg" alt="上排三屏起点雪花，下排三张结果" loading="lazy"><figcaption><span class="t">101.5 s</span><b>「因为起点那屏雪花，每次都是随机撒的。」</b>上排是三屏起点雪花，下排是各自补出的结果。</figcaption></figure>
+    <figure><img src="img/v-diffbig.jpg" alt="差值图：左边 0 个像素不同，右边几十万个" loading="lazy"><figcaption><span class="t">109 s</span><b>「两次，一模一样。」</b>左边同一屏雪花擦两次，差值图全黑；右边换一屏雪花，计数冲到 786,428。</figcaption></figure>
+    <figure><img src="img/v-red.jpg" alt="四栏对照，红衣男子的位置" loading="lazy"><figcaption><span class="t">116.5 s</span><b>「所以有两次，补出了他衣服的红。」</b>三次结果和原图并排，红衣男子的位置对齐叠出来。</figcaption></figure>
+  </div>
+
+  <div class="gal-h"><h3>③ 它怎么学会的</h3><span class="tc">130 – 158 s · 本机真训练了一个小网络</span></div>
+  <div class="gallery">
+    <figure><img src="img/v-photowall.jpg" alt="4096 张小图组成的照片墙被雪花吞没" loading="lazy"><figcaption><span class="t">134.5 s</span><b>「每一张，都被一层层撒上雪花。」</b>64×64 = 4,096 张小图，从三张真实照片里裁出来。</figcaption></figure>
+    <figure><img src="img/v-guess.jpg" alt="题目、它猜的、答案三联" loading="lazy"><figcaption><span class="t">141 s</span><b>「撒进去的，是哪些雪花？」</b>在我电脑上训练了约 11 分钟的小网络，现场答题。题目那张照片它没见过。</figcaption></figure>
+    <figure><img src="img/v-average.jpg" alt="4096 张图逐像素平均成一张模糊的图" loading="lazy"><figcaption><span class="t">154.5 s</span><b>「是这个世界『大概长什么样』。」</b>4,096 张逐像素平均成一张：上面亮是天，下面暗是地和人。</figcaption></figure>
+  </div>
+
+  <div class="gal-h"><h3>④ 这招从哪来</h3><span class="tc">158 – 203 s · 1827 → 2022</span></div>
+  <div class="gallery g4">
+    <figure><img src="img/v-micro.jpg" alt="显微镜视场里的微粒" loading="lazy"><figcaption><span class="t">165 s</span><b>1827 · 布朗</b>微粒在用确定性随机游走真的乱撞。</figcaption></figure>
+    <figure><img src="img/v-roll.jpg" alt="瑞士卷形状的点云" loading="lazy"><figcaption><span class="t">175 s</span><b>2015 · Sohl-Dickstein</b>论文里的经典玩具数据，先散开，再倒流聚回。</figcaption></figure>
+    <figure><img src="img/v-bark.jpg" alt="树皮照片中间挖了一个洞" loading="lazy"><figcaption><span class="t">182 s</span><b>那篇论文就补过图</b>挖掉树皮照片的中心，再补回来（示意）。</figcaption></figure>
+    <figure><img src="img/v-guessnoise.jpg" alt="带噪的图等于画面加雪花" loading="lazy"><figcaption><span class="t">193 s</span><b>2020 · DDPM</b>「别猜画面，猜撒进去的雪花。」</figcaption></figure>
+  </div>
+
+  <div class="gal-h"><h3>⑤ 你的照片，你的记忆</h3><span class="tc">203 – 260 s</span></div>
+  <div class="gallery">
+    <figure><img src="img/v-adobe.jpg" alt="三张补图并排，右上角标注 Lightroom" loading="lazy"><figcaption><span class="t">207 s</span><b>「Adobe 的 AI 消除，一次就给你 3 个不同的答案。」</b>画面上注明：这三张是本片的实测，不是 Lightroom 的输出。</figcaption></figure>
+    <figure><img src="img/v-flip.jpg" alt="照片翻过来，背面是红色人形" loading="lazy"><figcaption><span class="t">210 s</span><b>「你是否也觉得：照片会骗人，记忆不会？」</b>照片翻到背面，背面就是被编出来的那块。</figcaption></figure>
+    <figure><img src="img/v-bars.jpg" alt="三组数据条 32% 14% 12%" loading="lazy"><figcaption><span class="t">227 s</span><b>「问『撞碎』的那组，说看到的多了一倍多。」</b>150 位受试者就是 150 张卡，数据条由翻红的卡排成。</figcaption></figure>
+    <figure><img src="img/v-smash.jpg" alt="记忆画面的洞里浮出红色的撞碎二字" loading="lazy"><figcaption><span class="t">238 s</span><b>「一个词，就像那一丝红影……」</b>「撞碎」两个字从雪花里浮出来，碎玻璃跟着一片片显影。</figcaption></figure>
+    <figure><img src="img/v-compare.jpg" alt="左边三面墙，右边记忆画面" loading="lazy"><figcaption><span class="t">242.5 s</span><b>「AI 补的，擦三次就能识破。」</b>左边三面墙洞口同时描红；右边的记忆点了没反应，红线自己愈合。</figcaption></figure>
+    <figure><img src="img/v-endphoto.jpg" alt="回到开场那张照片" loading="lazy"><figcaption><span class="t">253 s</span><b>「大概也有一块，是这样补上的。」</b>开场那张照片从雪花里再显影一次，两个人又被补成了墙。</figcaption></figure>
+  </div>
+</section>
+
+<section id="fix">
+  <div class="sec-head">
+    <div class="stage"><span class="n">⑤</span><span class="d">看片和返修</span></div>
+    <h2>我只挑了一个毛病，它就被删了</h2>
+    <p class="lead">Claude 先替我审了两轮，提了修改意见，出片进程把几个画面包返修了一遍。我自己看成片时，只挑出了一个问题。</p>
+  </div>
+  <div class="story">
+    <div>
+      <span class="when">Claude 写在结构稿里的点子</span>
+      <p class="idea">画面底边挂一条细细的进度条，它本身就是一张正在去噪的照片：开头满是雪花，越往后越清楚，片尾刚好变回那张照片。</p>
+      <div class="bar-demo" aria-hidden="true"></div>
+      <p>做出来只有 14 像素高。</p>
+    </div>
+    <div>
+      <span class="when">我看成片的时候</span>
+      <p class="idea">底下一直挂着的那条杠是什么？</p>
+      <p>手机上根本看不出那是一张照片，只像画面坏了。全片去掉，片尾改成整屏雪花盖上来，照片再从雪花里显影一次，重渲成片。</p>
+    </div>
+  </div>
+
+  <div class="pits">
+    <div class="pit pit-h"><span>遇到的问题</span><span>怎么处理的</span></div>
+    <div class="pit"><span class="q">出片进程在等子 agent 的时候结束了回合，后台任务最多只等 600 秒，3 个还没做完的画面包被中途杀掉</span><span class="a">加一个环境变量取消这个上限，让它在半成品上接着做。3 个包由新的子 agent 续做完成。</span></div>
+    <div class="pit"><span class="q">补图时用纯雪花起步，整张图发灰发白</span><span class="a">改成留一点点原图（strength 0.99）就正常了。代价是起点里藏着红衣男子的影子，后来这成了片子里的一笔。</span></div>
+    <div class="pit"><span class="q">录去噪轨迹时，每一步当场解码，一步要 1 分多钟</span><span class="a">先把每一步的潜变量存在内存里，跑完统一解码，81 帧一共 86 秒。</span></div>
+    <div class="pit"><span class="q">满屏雪花一平移，连着播就糊成一片闪</span><span class="a">雪花原地不动，只在上面开窗；镜头接缝前后用同一个随机种子。</span></div>
+    <div class="pit"><span class="q">一个画面包为了让屏幕上的误差一路往下走，跳过了误差反而回升的第 800 步</span><span class="a">总装时改回来：6 个检查点全上屏，如实显示回升。</span></div>
+    <div class="pit"><span class="q">3:4 封面第二稿，人形洞里冒出了城楼和旗子</span><span class="a">第三稿清掉，三处文字逐字放大核对。</span></div>
+  </div>
+</section>
+
+<section id="ship">
+  <div class="sec-head">
+    <div class="stage"><span class="n">⑥</span><span class="d">封面和发布</span></div>
+    <h2>封面先出构图稿，再交给 Codex 画</h2>
+    <p class="lead">Claude 用片子里的字体和配色，先截出三个方向的构图稿，我挑了「墙上的人形洞」，再交给 Codex 画出三种比例。</p>
+  </div>
+  <div class="covers">
+    <figure><img src="img/c-directions.jpg" alt="三个方向的构图参考稿，每个方向三种比例" loading="lazy"><figcaption><b>构图参考稿。</b>A、B、C 三个方向，每个都排了 3:4、4:3、16:9。</figcaption></figure>
+    <div class="side">
+      <figure><img src="img/c-16-9.jpg" alt="16:9 封面：无中生有，墙上的人形雪花" loading="lazy"><figcaption>16:9</figcaption></figure>
+      <figure><img src="img/c-3-4.jpg" alt="3:4 封面" loading="lazy"><figcaption>3:4（第三稿）</figcaption></figure>
+      <figure><img src="img/c-4-3.jpg" alt="4:3 封面" loading="lazy"><figcaption>4:3</figcaption></figure>
+    </div>
+  </div>
+  <div class="post">
+    <div><span class="fig">标题</span><h3>抖音标题</h3><p class="ttl">Vibe知识大赏｜《无中生有》：AI消除路人后，墙是哪来的？</p></div>
+    <div><span class="fig">1080P</span><h3>成片</h3><p>画面做完，配上音乐，渲成 1920×1080、30 帧、260 秒的成片。</p></div>
+    <div><span class="fig">4 张</span><h3>署名</h3><p>用到的 4 张照片都是 CC BY-SA 许可，片尾卡和简介里写了作者和许可，墨水、树皮和模型也一并列出。</p></div>
+    <div><span class="fig">抖音</span><h3>发布</h3><p>抖音首发：<a href="https://v.douyin.com/Uoq2rNPk-oc/">v.douyin.com/Uoq2rNPk-oc</a></p></div>
+  </div>
+</section>
+
+<section id="lesson">
+  <div class="sec-head">
+    <div class="eyebrow">收获</div>
+    <h2>做完这条，我记住了三件事</h2>
+  </div>
+  <div class="takeaways">
+    <div class="tk"><div class="n">1</div><div><h3>最唬人的画面，往往是真的</h3><p>我给的标准是观众看完会怀疑「这真的是 AI 做的吗？」。回头看，片子里最有说服力的几帧都不是画出来的：三张补图是实测原图，「0 个像素不同」是实算的差值，去噪的 40 步是录下来的。数据本身就是画面。</p></div></div>
+    <div class="tk"><div class="n">2</div><div><h3>先实测，再定文案</h3><p>本来想写「三面不同的墙」，实测补出来是三样东西。本来以为起点是纯雪花，实测发现里面还藏着红衣男子的影子。这两处都让片子更准，后一处还成了结尾的伏笔。没有实测，这些都只能靠猜。</p></div></div>
+    <div class="tk"><div class="n">3</div><div><h3>巧思要过「手机上一眼看懂」这一关</h3><p>「进度条是一张正在去噪的照片」写在纸上很妙，渲出来只有 14 像素高，手机上像画面故障。AI 很会想点子，判断点子在观众手里是什么样，还得靠人看一眼。</p></div></div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="sec-head">
+    <div class="eyebrow">问答</div>
+    <h2>常见问题</h2>
+  </div>
+  <div class="faq">
+    <div><h3>手机「AI 消除」擦掉的地方，是从哪来的？</h3><p>是模型现编的，照片里根本没拍到那块墙。我们在本机用开源的 SDXL 补图模型实测，同一块地方擦三次，补出了暗红门洞、红布和一段砖墙三样不同的东西。扩散模型从一屏雪花开始，一步步把雪花擦掉，每一步只猜「上一步这里大概长什么样」，猜的时候一直看着洞口四周的砖缝和光线。</p></div>
+    <div><h3>同一个地方擦三次，为什么结果不一样？</h3><p>因为起点那屏雪花每次都是随机撒的。用同一个随机种子再擦一次，786,432 个像素一个不差。手机上能不能看到这个现象要看厂商：Adobe Lightroom Classic 的生成式移除一次给 3 个不同结果，谷歌的 Magic Editor 也会给几个结果让你挑。苹果和国产几家，我们没查到官方写明重来一次结果会变。</p></div>
+    <div><h3>手机的 AI 消除都是扩散模型吗？</h3><p>不能这么说。官方明确写了用扩散模型的，只查到三星 Galaxy S24（海外版），它的生成式编辑背后是谷歌的 Imagen 2。其他厂商大多只说用了生成式 AI 或大模型。</p></div>
+    <div><h3>片子里的画面是 AI 生成的视频吗？</h3><p>不是那种一句话生成的视频。画面是 Claude Opus 5.5 写 Remotion 代码渲染出来的；照片来自 Wikimedia Commons，墨水是 Pexels 的实拍素材，补图、去噪轨迹和加噪序列是本机 SDXL 实测的原始输出。整条片没有用 Seedance 这类视频生成模型。</p></div>
+    <div><h3>做这条片花了多少钱？</h3><p>本机实测用的是开源模型，没花钱。出片进程和它的 18 个子 agent 按 API 价格折算约 112 美元；主会话和两个助手没有花费记录，没算在里面。</p></div>
+    <div><h3>用了哪些工具？</h3><p>Claude Code（Opus 5.5）负责从选题到渲染的全部动手活；Remotion 做画面；SDXL Inpainting、Mask2Former、Depth Anything V2、Swin2SR 在本机跑实测、分割、算深度和超分；Codex 画封面。</p></div>
+  </div>
+
+  <div class="author">
+    <div class="eyebrow">关于作者</div>
+    <h3 style="font-size:22px">泽轩604</h3>
+    <p style="color:var(--ink-2)">抖音博主，做 AI 工具和模型的实测、玩法和教程，想做一个能把东西讲透的 AI 博主。「Vibe知识大赏」用纯动画讲 AI 的机制，第一期《词的坐标》讲词向量，这是第二期。</p>
+    <p class="muted">本期成片：<a href="https://v.douyin.com/Uoq2rNPk-oc/">抖音 · 无中生有</a></p>
+  </div>
+
+  <footer>
+    <p>消息条数和操作次数，来自这期的对话记录。花费来自出片进程的运行记录，按 API 价格折算。实测数字都抄自脚本输出的 JSON。</p>
+    <h4>片尾卡里的参考文献（节选）</h4>
+    <ol>
+      <li>Brown, R. (1828). A brief account of microscopical observations… <i>Philosophical Magazine</i>. <a href="https://www.damtp.cam.ac.uk/user/gold/pdfs/teaching/old_literature/Brown1828.pdf">PDF</a></li>
+      <li>Einstein, A. (1905). Über die von der molekularkinetischen Theorie der Wärme geforderte Bewegung… <i>Annalen der Physik</i>. <a href="https://doi.org/10.1002/andp.19053220806">DOI</a></li>
+      <li>Sohl-Dickstein, J. et al. (2015). Deep Unsupervised Learning using Nonequilibrium Thermodynamics. ICML. <a href="https://arxiv.org/abs/1503.03585">arXiv</a></li>
+      <li>Ho, J., Jain, A., Abbeel, P. (2020). Denoising Diffusion Probabilistic Models. NeurIPS. <a href="https://arxiv.org/abs/2006.11239">arXiv</a></li>
+      <li>Rombach, R. et al. (2022). High-Resolution Image Synthesis with Latent Diffusion Models. CVPR. <a href="https://openaccess.thecvf.com/content/CVPR2022/html/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.html">CVF</a></li>
+      <li>Lugmayr, A. et al. (2022). RePaint: Inpainting using Denoising Diffusion Probabilistic Models. CVPR. <a href="https://arxiv.org/abs/2201.09865">arXiv</a></li>
+      <li>Loftus, E. F., Palmer, J. C. (1974). Reconstruction of automobile destruction. <i>Journal of Verbal Learning and Verbal Behavior</i>, 13(5).</li>
+      <li>Quanta Magazine (2023). The Physics Principle That Inspired Modern AI Art. <a href="https://www.quantamagazine.org/the-physics-principle-that-inspired-modern-ai-art-20230105/">链接</a></li>
+      <li>Adobe. Lightroom Classic 生成式移除帮助页. <a href="https://helpx.adobe.com/lightroom-classic/help/remove-tool.html">链接</a></li>
+    </ol>
+    <h4>素材署名</h4>
+    <p>照片：Dquai《<a href="https://commons.wikimedia.org/wiki/File:Tourists_at_the_Old_Dragon_Head.jpg">Tourists at the Old Dragon Head</a>》，CC BY-SA 4.0，经 AI 补图改编，本页截图及改编部分同样以 CC BY-SA 4.0 发布。照片墙另用了 Dquai《Visitors before the Duanmen》（CC BY-SA 4.0）、Daniel Case《Crowded Bund on summer evening》（CC BY-SA 3.0）、Yumeto《20231002 Tourists outside the Juzizhou Station》（CC BY-SA 4.0）。墨水实拍：Joshua Malic、Yeşim Çolak（Pexels License）。树皮：Kurt Kaiser（CC0 1.0）。车祸路口和碎玻璃是程序生成的示意画面。</p>
+    <p>泽轩604 · 用 Claude Code、Remotion 制作 · <a href="https://github.com/zexuanw958-svg/zexuan-videos">GitHub 仓库</a> · <a href="../">全部幕后</a></p>
+  </footer>
+</section>
+
+</main>
+<div id="tip" hidden></div>
+
+<script>
+(function () {
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- 分工方格：一格 = 5 次 ---------- */
+  document.querySelectorAll(".units").forEach(function (el) {
+    var n = Math.max(1, Math.round(+el.dataset.n / 5)), c = el.dataset.c, h = "";
+    for (var i = 0; i < n; i++) h += '<i style="background:' + c + '"></i>';
+    el.innerHTML = h;
+  });
+
+
+  /* ---------- 悬停提示 ---------- */
+  var tip = document.getElementById("tip");
+  function showTip(e) {
+    var t = e.currentTarget.getAttribute("data-tip"); if (!t) return;
+    tip.textContent = t; tip.hidden = false;
+    var r = e.currentTarget.getBoundingClientRect();
+    var x = (e.clientX != null && e.type.indexOf("mouse") === 0) ? e.clientX : r.left + r.width / 2;
+    var y = (e.clientY != null && e.type.indexOf("mouse") === 0) ? e.clientY : r.top;
+    var w = tip.offsetWidth;
+    tip.style.left = Math.min(Math.max(8, x - w / 2), window.innerWidth - w - 8) + "px";
+    tip.style.top = Math.max(8, y - tip.offsetHeight - 12) + "px";
+  }
+  function hideTip() { tip.hidden = true; }
+  function bindTip(el) {
+    el.tabIndex = 0;
+    el.addEventListener("mouseenter", showTip); el.addEventListener("mousemove", showTip);
+    el.addEventListener("mouseleave", hideTip); el.addEventListener("focus", showTip); el.addEventListener("blur", hideTip);
+  }
+
+  /* ---------- 成片拆开看（秒） ---------- */
+  var D = 260.02;
+  function fp(s) { return (s / D * 100).toFixed(3) + "%"; }
+  function fw(a, b) { return ((b - a) / D * 100).toFixed(3) + "%"; }
+  var rows = [
+    { lab: "章节签", bars: [[0,10,"开场","ch","0–10 s 开场"],[10,26.3,"① 它在编","ch","10–26 s ① 它在编"],[26.3,130,"② 它怎么编","ch","26–130 s ② 它怎么编"],[130,158.4,"③ 怎么学会的","ch","130–158 s ③ 它怎么学会的"],[158.4,203,"④ 这招从哪来","ch","158–203 s ④ 这招从哪来"],[203,257.5,"⑤ 你的照片，你的记忆","ch","203–257 s ⑤ 你的照片，你的记忆"],[257.5,D,"","ch","257.5 s 起 片尾卡"]] },
+    { lab: "画面包<small>谁做的</small>", bars: [[0,26.3,"P01 开场","p0","P01 · 0–26 s · 出片进程自己做：照片显影、点击消除、片名、三张补图"],[26.3,49.2,"P02 墨水","p1","P02 · 26–49 s · 墨水实拍、倒放、扩散"],[49.2,79.5,"P03 加噪","p1","P03 · 49–80 s · 加噪、倒放、上一步、回到那块墙"],[79.5,97.9,"P04 轨迹","p1","P04 · 80–98 s · 实测去噪轨迹，两栏"],[97.9,130,"P05 种子","p1","P05 · 98–130 s · 随机起点、同种子、起点里的人影"],[130,158.4,"P06 学会","p1","P06 · 130–158 s · 照片墙、本机训练的小网络"],[158.4,203,"P07 历史","p1","P07 · 158–203 s · 布朗、2015、树皮补图、DDPM"],[203,260.02,"P08 记忆 + 片尾","p1","P08 · 203–260 s · 车祸记忆实验、补碎玻璃、片尾"]] },
+    { lab: "实测输出<small>本机 SDXL</small>", bars: [[0.1,26.3,"补图三联","re","开场照片、三次补图、结构线都来自实测"],[49.2,79.5,"加噪序列","re","实测加噪序列和读数"],[79.8,97.9,"去噪 40 步","re","实测去噪轨迹逐步上屏"],[97.9,127,"种子 / 差值","re","起点雪花、差值图、起点里的人影"],[189.6,200,"","re","DDPM 那段用的种子 1 结果"],[203,210,"","re","Adobe 那段的三张图是本片实测"],[242.7,246,"","re","三面墙对照"],[251.3,257.5,"","re","片尾回到照片，再补一次"]] },
+    { lab: "真实素材", bars: [[28,49.2,"墨水实拍","ft","Pexels 实拍：墨水入杯、整杯变灰"],[130,158.4,"照片墙","ft","4,096 张小图来自三张 Wikimedia 照片"],[182,189.5,"树皮","ft","Wikimedia 上的树皮照片（CC0）"]] }
+  ];
+  var fc = document.getElementById("filmchart"), fh = "";
+  rows.forEach(function (R) {
+    fh += '<div class="f-lab">' + R.lab + '</div><div class="f-track">';
+    R.bars.forEach(function (b) {
+      fh += '<span class="f-b ' + b[3] + '" style="left:' + fp(b[0]) + ';width:' + fw(b[0], b[1]) + '" data-tip="' + b[4] + '">' + b[2] + "</span>";
+    });
+    fh += "</div>";
+  });
+  fh += '<div></div><div class="f-axis">';
+  [0, 30, 60, 90, 120, 150, 180, 210, 240].forEach(function (s) {
+    fh += '<span style="left:' + fp(s) + (s === 0 ? ';transform:none' : '') + '">' + Math.floor(s / 60) + ":" + ("0" + s % 60).slice(-2) + "</span>";
+  });
+  fh += "</div>";
+  fc.innerHTML = fh;
+  fc.querySelectorAll("[data-tip]").forEach(bindTip);
+
+  /* ---------- 去噪轨迹滑块（实测 per_step 数据） ---------- */
+  var TS = [937,937,913,889,865,841,817,793,769,745,721,697,673,649,625,601,577,553,529,505,481,457,433,409,385,361,337,313,289,265,241,217,193,169,145,121,97,73,49,25,1];
+  var SG = [10.1954,8.9436,7.8806,6.9739,6.197,5.5286,4.951,4.4498,4.013,3.6307,3.2947,2.9982,2.7355,2.5017,2.2929,2.1055,1.9367,1.7841,1.6456,1.5192,1.4036,1.2973,1.1993,1.1084,1.0239,0.945,0.871,0.8013,0.7353,0.6726,0.6127,0.5551,0.4993,0.4448,0.391,0.3372,0.2819,0.223,0.1548,0.0413,0];
+  var range = document.getElementById("tj-range"), imN = document.getElementById("tj-n"), imX = document.getElementById("tj-x"),
+      empty = document.getElementById("tj-empty"), play = document.getElementById("tj-play");
+  function pad(k) { return ("0" + k).slice(-2); }
+  function setStep(k) {
+    imN.src = "img/traj/n" + pad(k) + ".jpg";
+    if (k === 0) { imX.hidden = true; empty.hidden = false; }
+    else { imX.src = "img/traj/x" + pad(k) + ".jpg"; imX.hidden = false; empty.hidden = true; }
+    document.getElementById("tj-step").textContent = k + " / 40";
+    document.getElementById("tj-t").textContent = k === 0 ? "937（起点）" : TS[k];
+    document.getElementById("tj-s").textContent = SG[k].toFixed(3);
+    document.getElementById("tj-a").textContent = (1 / Math.sqrt(SG[k] * SG[k] + 1)).toFixed(3);
+  }
+  range.addEventListener("input", function () { stopPlay(); setStep(+range.value); });
+  var timer = null;
+  function stopPlay() { if (timer) { clearInterval(timer); timer = null; play.textContent = "▶ 播放"; } }
+  play.addEventListener("click", function () {
+    if (timer) { stopPlay(); return; }
+    if (+range.value >= 40) range.value = 0;
+    play.textContent = "❚❚ 暂停";
+    timer = setInterval(function () {
+      var k = +range.value + 1; range.value = k; setStep(k);
+      if (k >= 40) stopPlay();
+    }, 180);
+  });
+  var preloaded = false;
+  function preload() {
+    if (preloaded) return; preloaded = true;
+    for (var k = 0; k <= 40; k++) { new Image().src = "img/traj/n" + pad(k) + ".jpg"; if (k) new Image().src = "img/traj/x" + pad(k) + ".jpg"; }
+  }
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) { preload(); io.disconnect(); } }, { rootMargin: "600px" });
+    io.observe(document.querySelector(".traj"));
+  } else preload();
+  range.addEventListener("pointerdown", preload);
+
+  /* ---------- 开场补图板 ---------- */
+  var cv = document.getElementById("plate"), ctx = cv.getContext("2d", { willReadFrequently: true });
+  var W = cv.width, H = cv.height, N = W * H;
+  var names = { orig: "h-original.jpg", s1: "h-seed1.jpg", s2: "h-seed2.jpg", s3: "h-seed3.jpg", r1: "h-seed1_repeat.jpg", mask: "h-mask.png" };
+  var px = {}, loaded = 0, total = Object.keys(names).length, ready = false;
+  Object.keys(names).forEach(function (k) {
+    var im = new Image();
+    im.onload = function () {
+      var c = document.createElement("canvas"); c.width = W; c.height = H;
+      var x = c.getContext("2d"); x.drawImage(im, 0, 0, W, H);
+      px[k] = x.getImageData(0, 0, W, H).data;
+      if (k === "orig") ctx.drawImage(im, 0, 0, W, H);
+      if (++loaded === total) init();
+    };
+    im.src = "img/" + names[k];
+  });
+  // 同一个种子 → 同一屏高斯雪花（mulberry32 + Box–Muller）
+  var noiseCache = {};
+  function noiseFor(seed) {
+    if (noiseCache[seed]) return noiseCache[seed];
+    var a = seed * 2654435761 >>> 0;
+    function rnd() { a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+    var n = new Float32Array(N * 3);
+    for (var i = 0; i < N * 3; i += 2) {
+      var u = Math.max(rnd(), 1e-9), v = rnd(), r = Math.sqrt(-2 * Math.log(u));
+      n[i] = r * Math.cos(6.2831853 * v); if (i + 1 < N * 3) n[i + 1] = r * Math.sin(6.2831853 * v);
+    }
+    // 偏灰的雪花：亮度为主，色度留三成（和片子里一样）
+    for (var j = 0; j < N; j++) {
+      var o = j * 3, l = (n[o] + n[o + 1] + n[o + 2]) / 3;
+      n[o] = l + .3 * (n[o] - l); n[o + 1] = l + .3 * (n[o + 1] - l); n[o + 2] = l + .3 * (n[o + 2] - l);
+    }
+    return (noiseCache[seed] = n);
+  }
+  var maskIdx, maskW, out;
+  function init() {
+    var mk = px.mask, idx = [], wts = [];
+    for (var i = 0; i < N; i++) { var w = mk[i * 4] / 255; if (w > 0.01) { idx.push(i); wts.push(w); } }
+    maskIdx = new Uint32Array(idx); maskW = new Float32Array(wts);
+    out = ctx.createImageData(W, H);
+    ready = true;
+  }
+  // x = √ᾱ·x0 + √(1−ᾱ)·ε，在 [-1,1] 空间里算，只改遮罩内
+  function render(srcKey, s, seed) {
+    var o = out.data, base = px.orig, src = px[srcKey], n = seed ? noiseFor(seed) : null, c = Math.sqrt(Math.max(0, 1 - s * s));
+    o.set(base);
+    for (var j = 0; j < maskIdx.length; j++) {
+      var i = maskIdx[j], p = i * 4, w = maskW[j];
+      for (var ch = 0; ch < 3; ch++) {
+        var x0 = src[p + ch] / 127.5 - 1, v = n ? s * x0 + c * n[i * 3 + ch] : x0;
+        v = (v + 1) * 127.5; v = v < 0 ? 0 : v > 255 ? 255 : v;
+        o[p + ch] = base[p + ch] * (1 - w) + v * w;
+      }
+    }
+    ctx.putImageData(out, 0, 0);
+  }
+  var btn = document.getElementById("erase"), reset = document.getElementById("reset"), msg = document.getElementById("board-msg");
+  var roSeed = document.getElementById("ro-seed"), roStep = document.getElementById("ro-step"), roSig = document.getElementById("ro-sig");
+  var shown = "orig", stage = 0, busy = false;
+  var plan = [
+    { key: "s1", seed: 1, label: "种子 1", chip: 1, msg: "种子 1 补出了一道暗红的门洞。照片里根本没有这个东西。", next: "再擦一次" },
+    { key: "s2", seed: 2, label: "种子 2", chip: 2, msg: "同一个地方，种子 2 补出了一条从墙头垂下的红布。", next: "再擦一次" },
+    { key: "s3", seed: 3, label: "种子 3", chip: 3, msg: "种子 3 补出了一段砖墙。三次，三个完全不同的答案。", next: "用第 1 屏雪花再擦" },
+    { key: "r1", seed: 1, label: "种子 1 · 复跑", chip: 1, msg: "和第一次逐像素相同：786,432 个像素，0 个不同。随机性全在起点那屏雪花里。", next: "回到原图" }
+  ];
+  function setChips(k) { document.querySelectorAll(".seedchip").forEach(function (c) { c.classList.toggle("on", +c.dataset.s === k); }); }
+  function sig(s) { roSig.textContent = "√ᾱ = " + s.toFixed(3); }
+  function anim(dur, f, done) {
+    if (reduce) { f(1); done(); return; }
+    var t0 = performance.now();
+    (function tick(now) { var t = Math.min(1, (now - t0) / dur); f(t); if (t < 1) requestAnimationFrame(tick); else done(); })(t0);
+  }
+  function go() {
+    if (!ready || busy) return;
+    if (stage >= plan.length) { // 回到原图
+      render("orig", 1, 0); shown = "orig"; stage = 0; setChips(0);
+      roSeed.textContent = "原图 · 还没擦"; roStep.textContent = "-- / 40"; sig(1);
+      btn.textContent = "点一下，消除"; reset.hidden = true;
+      msg.textContent = "照片里这两个人身后是什么，相机根本没拍到。点按钮，让 AI 补一次。";
+      return;
+    }
+    var P = plan[stage]; busy = true; btn.disabled = true;
+    roSeed.textContent = P.label; msg.textContent = "洞里先灌满雪花……";
+    var from = shown, sEnd = 1 / Math.sqrt(SG[0] * SG[0] + 1); // 0.0976
+    // 1) 灌雪花：当前画面 → 起点（只剩 9.8% 原图信号）
+    anim(520, function (t) {
+      var e = t * t * (3 - 2 * t), s = 1 - (1 - sEnd) * e;
+      render(from, s, P.seed); roStep.textContent = "00 / 40"; sig(s);
+    }, function () {
+      // 2) 擦 40 步：按实测的 σ 表把雪花退掉，显出这一次的结果
+      anim(1700, function (t) {
+        var k = Math.min(40, Math.floor(t * 40 + 1e-6)), f = t * 40 - k, s;
+        var a0 = 1 / Math.sqrt(SG[k] * SG[k] + 1), a1 = 1 / Math.sqrt(SG[Math.min(40, k + 1)] * SG[Math.min(40, k + 1)] + 1);
+        s = t >= 1 ? 1 : a0 + (a1 - a0) * f;
+        render(P.key, s, P.seed); roStep.textContent = pad(t >= 1 ? 40 : k) + " / 40"; sig(s);
+      }, function () {
+        shown = P.key; stage++; busy = false; btn.disabled = false;
+        setChips(P.chip); msg.textContent = P.msg; btn.textContent = P.next; reset.hidden = false;
+      });
+    });
+  }
+  btn.addEventListener("click", go);
+  reset.addEventListener("click", function () { if (busy) return; stage = plan.length; go(); });
+
+  /* ---------- 章节条高亮 ---------- */
+  var links = Array.prototype.slice.call(document.querySelectorAll(".chapters a"));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute("href")); });
+  function spy() {
+    var y = window.scrollY + 120, cur = 0;
+    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
+    links.forEach(function (a, i) { a.classList.toggle("on", i === cur); });
+  }
+  window.addEventListener("scroll", spy, { passive: true }); spy();
+})();
+</script>
+</body>
+</html>
